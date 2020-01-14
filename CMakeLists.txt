@@ -21,6 +21,9 @@ if (USE_CLANG)
     SET(CMAKE_CXX_COMPILER "clang++")
 endif(USE_CLANG)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(
     CppPlayground
     VERSION "0.1.0" 
@@ -28,7 +31,7 @@ project(
     LANGUAGES CXX
 )
 
-set_property(GLOBAL PROPERTY CXX_STANDARD 17)
+#set_property(GLOBAL PROPERTY CXX_STANDARD 17)
 include_directories(include)
 
 add_subdirectory(sample)
