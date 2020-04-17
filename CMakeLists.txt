@@ -27,12 +27,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(
     CppPlayground
     VERSION "0.1.0" 
-    DESCRIPTION "Some C++ Utilities & Experimental Staffs"
+    DESCRIPTION "Some C++ Utilities & Experimental Stuffs"
     LANGUAGES CXX
 )
 
-#set_property(GLOBAL PROPERTY CXX_STANDARD 17)
-include_directories(include)
+include_directories(src)
 
 add_subdirectory(sample)
 add_subdirectory(test)

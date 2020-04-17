@@ -31,7 +31,5 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 # Now simply link against gtest or gtest_main as needed. Eg
-add_executable(test_static_function ./static_function.cpp)
-target_link_libraries(test_static_function gtest_main)
-add_test(NAME static_function_test COMMAND test_static_function)
 
+add_subdirectory(./Function)
