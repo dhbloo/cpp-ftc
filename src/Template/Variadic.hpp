@@ -18,7 +18,12 @@ template <typename... Ts> constexpr auto Head(Ts &&... vs);
 template <typename... Ts> constexpr auto Last(Ts &&... vs);
 
 /// Return the n-th element of a parameter list
-template <std::size_t N, typename... Ts> constexpr auto NthElement(Ts &&... vs);
+///
+/// Negative N refers to reversed list, eg. -1 gives the last parameter,
+/// -2 gaives penultimate parameter.
+///
+/// @tparam N Index of element, should be in range [-Length, Length - 1]
+template <int Idx, typename... Ts> constexpr auto Get(Ts &&... vs);
 
 /// Return f(xn,...,f(x2, f(x1, init))...) or init if parameter list is empty.
 template <typename F, typename Acc, typename... Ts>
@@ -146,10 +151,11 @@ template <typename... Ts> constexpr auto Last(Ts &&... vs)
     return detail::Last(std::forward<Ts>(vs)...);
 }
 
-template <std::size_t N, typename... Ts> constexpr auto NthElement(Ts &&... vs)
+template <int Idx, typename... Ts> constexpr auto Get(Ts &&... vs)
 {
-    static_assert(N < sizeof...(vs), "Index out of range");
-    return detail::NthElement<N, Ts...>::call(std::forward<Ts>(vs)...);
+    constexpr int Len = sizeof...(vs);
+    static_assert(-Len <= Idx && Idx < Len, "Index out of range");
+    return detail::NthElement<(Idx + Len) % Len, Ts...>::call(std::forward<Ts>(vs)...);
 }
 
 template <typename F, typename Acc, typename... Ts>
