@@ -6,7 +6,7 @@ namespace cpppg {
 
 template <typename, std::size_t BufferSize = 24> class StaticFunction; /* undefined */
 
-namespace {
+namespace detail {
 
     template <typename T> struct __is_static_function
     {
@@ -65,7 +65,7 @@ public:
     template <typename T,
               typename = typename std::enable_if_t<
                   !std::is_function<T>::value
-                  && !__is_static_function<typename std::decay<T>::type>::value>>
+                  && !detail::__is_static_function<typename std::decay<T>::type>::value>>
     StaticFunction(T &&t) noexcept
     {
         using CallableType = typename std::decay<T>::type;
@@ -77,7 +77,7 @@ public:
     template <typename T,
               typename = typename std::enable_if_t<
                   !std::is_function<T>::value
-                  && !__is_static_function<typename std::decay<T>::type>::value>>
+                  && !detail::__is_static_function<typename std::decay<T>::type>::value>>
     StaticFunction &operator=(T &&t) noexcept
     {
         using CallableType = typename std::decay<T>::type;
