@@ -16,13 +16,10 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 option(USE_CLANG "build with clang" OFF)
-if (USE_CLANG)
+if(USE_CLANG)
     SET(CMAKE_C_COMPILER "clang")
     SET(CMAKE_CXX_COMPILER "clang++")
 endif(USE_CLANG)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(
     CppPlayground
@@ -30,6 +27,13 @@ project(
     DESCRIPTION "Some C++ Utilities & Experimental Stuffs"
     LANGUAGES CXX
 )
+
+if(MSVC)
+    add_compile_options("/std:c++17")
+else()
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif(MSVC)
 
 include_directories(src)
 
