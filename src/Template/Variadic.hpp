@@ -14,9 +14,11 @@ namespace cpppg::variadic {
 template <typename... Ts> struct are_same;
 template <typename... Ts> inline constexpr bool are_same_v = are_same<Ts...>::value;
 
+/// Get the first type in a type list
 template <typename... Ts> struct head;
 template <typename... Ts> using head_t = typename head<Ts...>::type;
 
+/// Get the last type in a type list
 template <typename... Ts> struct last;
 template <typename... Ts> using last_t = typename last<Ts...>::type;
 
