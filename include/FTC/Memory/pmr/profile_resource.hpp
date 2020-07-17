@@ -2,7 +2,7 @@
 #include <memory_resource>  // for std::memory_resource
 #include <set>              // for std::pmr::set
 
-namespace cpppg {
+namespace ftc {
 
 namespace pmr {
 
@@ -87,4 +87,4 @@ namespace pmr {
 
 }  // namespace pmr
 
-}  // namespace cpppg
+}  // namespace ftc

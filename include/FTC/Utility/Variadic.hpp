@@ -4,7 +4,7 @@
 #include <type_traits>  // for std::is_same
 #include <utility>      // for std::forward, std::declval
 
-namespace cpppg::variadic {
+namespace ftc::variadic {
 
 /* -------------------------------------------------------------------------
    Variadic type traits & type alias
@@ -268,11 +268,11 @@ template <std::size_t N, typename F> constexpr auto IndexSequence(F &&funcToForw
 template <int Begin, int End, int Step = 1, typename F>
 constexpr auto IntSequence(F &&funcToForward);
 
-}  // namespace cpppg::variadic
+}  // namespace ftc::variadic
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace cpppg::variadic {
+namespace ftc::variadic {
 
 namespace detail {
 
@@ -826,4 +826,4 @@ constexpr auto IntSequence(F &&funcToForward)
     return detail::GenIntSequence<Begin, End, Step>::call(std::forward<F>(funcToForward));
 }
 
-}  // namespace cpppg::variadic
+}  // namespace ftc::variadic

@@ -2,7 +2,7 @@
 #include <cstring>
 #include <iostream>
 
-namespace cpppg {
+namespace ftc {
 
 namespace {
     struct StdoutWrapper
@@ -53,4 +53,4 @@ private:
     char name[NameSize];
 };
 
-}  // namespace cpppg
+}  // namespace ftc

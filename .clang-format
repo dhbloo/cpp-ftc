@@ -78,7 +78,6 @@ SpaceBeforeCtorInitializerColon: 'true'
 SpaceBeforeInheritanceColon: 'true'
 SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: 'true'
-# 在尾随的评论前添加的空格数(只适用于//)
 SpacesBeforeTrailingComments: 2
 SpaceInEmptyParentheses: 'false'
 SpacesInAngles: 'false'

@@ -1,10 +1,10 @@
 #pragma once
-#include "../../Macros/Lift.hpp"
-#include "../Variadic.hpp"
+#include "FTC/Utility/Lift.hpp"
+#include "FTC/Utility/Variadic.hpp"
 
 #include <cstddef>  // for std::size_t
 
-namespace cpppg {
+namespace ftc {
 
 /// Get the return type of a callable type
 template <typename F> struct result_of;
@@ -29,11 +29,11 @@ template <typename F> constexpr auto ArgCountOf(F &&f);
 /// Note: Needs C++20
 #define INVOKE_FUNC_T(f, ...) std::invoke_result_t<decltype(LIFT(f)), __VA_ARGS__>
 
-}  // namespace cpppg
+}  // namespace ftc
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace cpppg {
+namespace ftc {
 
 namespace detail {
     // All callable type, eg. std::function, functor
@@ -138,4 +138,4 @@ template <typename F> constexpr auto ArgCountOf(F &&f)
     return arg_count_of_v<decltype(std::forward<F>(f))>;
 }
 
-}  // namespace cpppg
+}  // namespace ftc

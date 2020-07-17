@@ -2,41 +2,41 @@
 #include <functional>  // for std::bad_function_call
 #include <utility>     // for std::forward, std::move
 
-namespace cpppg {
-
-template <typename, std::size_t BufferSize = 24> class StaticFunction; /* undefined */
+namespace ftc {
 
 namespace detail {
 
-    template <typename T> struct __is_static_function
+    template <typename T> struct __is_small_function
     {
         static constexpr bool value = false;
     };
 
     template <typename Result, typename... Args, std::size_t BufferSize>
-    struct __is_static_function<StaticFunction<Result(Args...), BufferSize>>
+    struct __is_small_function<SmallFunction<Result(Args...), BufferSize>>
     {
         static constexpr bool value = true;
     };
 
 }
 
+template <typename, std::size_t BufferSize = 24> class SmallFunction; /* undefined */
+
 template <typename Result, typename... Args, std::size_t BufferSize>
-class StaticFunction<Result(Args...), BufferSize>
+class SmallFunction<Result(Args...), BufferSize>
 {
     static_assert(BufferSize >= 8, "buffer size should be at least 8");
 
 public:
-    StaticFunction() noexcept { new (storage) CallableT<std::nullptr_t>(nullptr); }
-    ~StaticFunction() { ((ICallable *)storage)->~ICallable(); }
+    SmallFunction() noexcept { new (storage) CallableT<std::nullptr_t>(nullptr); }
+    ~SmallFunction() { ((ICallable *)storage)->~ICallable(); }
 
-    StaticFunction(const StaticFunction &other) noexcept
+    SmallFunction(const SmallFunction &other) noexcept
     {
         const ICallable *_callable = reinterpret_cast<const ICallable *>(other.storage);
         _callable->Clone((void *)storage);
     }
 
-    StaticFunction(StaticFunction &&other) noexcept
+    SmallFunction(SmallFunction &&other) noexcept
     {
         ICallable *_callable = reinterpret_cast<ICallable *>(other.storage);
         _callable->Move((void *)storage);
@@ -44,19 +44,19 @@ public:
     }
 
     template <std::size_t BufferSizeT>
-    StaticFunction(const StaticFunction<Result(Args...), BufferSizeT> &t) noexcept
+    SmallFunction(const SmallFunction<Result(Args...), BufferSizeT> &t) noexcept
     {
         static_assert(BufferSizeT <= BufferSize, "buffer size is smaller than needed");
         const ICallable *_callable = reinterpret_cast<const ICallable *>(
-            reinterpret_cast<const StaticFunction &>(t).storage);
+            reinterpret_cast<const SmallFunction &>(t).storage);
         _callable->Clone((void *)storage);
     }
 
     template <std::size_t BufferSizeT>
-    StaticFunction(StaticFunction<Result(Args...), BufferSizeT> &&t) noexcept
+    SmallFunction(SmallFunction<Result(Args...), BufferSizeT> &&t) noexcept
     {
         static_assert(BufferSizeT <= BufferSize, "buffer size is smaller than needed");
-        StaticFunction &other     = reinterpret_cast<StaticFunction &>(t);
+        SmallFunction &other     = reinterpret_cast<SmallFunction &>(t);
         ICallable *      _callable = reinterpret_cast<ICallable *>(other.storage);
         _callable->Move((void *)storage);
         other = nullptr;
@@ -65,8 +65,8 @@ public:
     template <typename T,
               typename = typename std::enable_if_t<
                   !std::is_function<T>::value
-                  && !detail::__is_static_function<typename std::decay<T>::type>::value>>
-    StaticFunction(T &&t) noexcept
+                  && !detail::__is_small_function<typename std::decay<T>::type>::value>>
+    SmallFunction(T &&t) noexcept
     {
         using CallableType = typename std::decay<T>::type;
         static_assert(sizeof(CallableT<CallableType>) <= sizeof(storage),
@@ -77,8 +77,8 @@ public:
     template <typename T,
               typename = typename std::enable_if_t<
                   !std::is_function<T>::value
-                  && !detail::__is_static_function<typename std::decay<T>::type>::value>>
-    StaticFunction &operator=(T &&t) noexcept
+                  && !detail::__is_small_function<typename std::decay<T>::type>::value>>
+    SmallFunction &operator=(T &&t) noexcept
     {
         using CallableType = typename std::decay<T>::type;
         static_assert(sizeof(CallableT<CallableType>) <= sizeof(storage),
@@ -88,7 +88,7 @@ public:
         return *this;
     }
 
-    StaticFunction &operator=(const StaticFunction &other) noexcept
+    SmallFunction &operator=(const SmallFunction &other) noexcept
     {
         if (this == &other)
             return *this;
@@ -98,7 +98,7 @@ public:
         return *this;
     }
 
-    StaticFunction &operator=(StaticFunction &&other) noexcept
+    SmallFunction &operator=(SmallFunction &&other) noexcept
     {
         if (this == &other)
             return *this;
@@ -110,10 +110,10 @@ public:
     }
 
     template <std::size_t BufferSizeT>
-    StaticFunction &operator=(const StaticFunction<Result(Args...), BufferSizeT> &t) noexcept
+    SmallFunction &operator=(const SmallFunction<Result(Args...), BufferSizeT> &t) noexcept
     {
         static_assert(BufferSizeT <= BufferSize, "buffer size is smaller than needed");
-        const StaticFunction &other = reinterpret_cast<const StaticFunction &>(t);
+        const SmallFunction &other = reinterpret_cast<const SmallFunction &>(t);
         ((ICallable *)storage)->~ICallable();
         const ICallable *_callable = reinterpret_cast<const ICallable *>(other.storage);
         _callable->Clone((void *)storage);
@@ -121,10 +121,10 @@ public:
     }
 
     template <std::size_t BufferSizeT>
-    StaticFunction &operator=(StaticFunction<Result(Args...), BufferSizeT> &&t) noexcept
+    SmallFunction &operator=(SmallFunction<Result(Args...), BufferSizeT> &&t) noexcept
     {
         static_assert(BufferSizeT <= BufferSize, "buffer size is smaller than needed");
-        StaticFunction &other = reinterpret_cast<StaticFunction &>(t);
+        SmallFunction &other = reinterpret_cast<SmallFunction &>(t);
         ((ICallable *)storage)->~ICallable();
         ICallable *_callable = reinterpret_cast<ICallable *>(other.storage);
         _callable->Move((void *)storage);
@@ -135,10 +135,10 @@ public:
     explicit operator bool() const noexcept { return ((ICallable *)storage)->IsNotEmpty(); }
     Result   operator()(Args... args) const { return ((ICallable *)storage)->Invoke(args...); }
 
-    friend bool operator==(const StaticFunction &f, std::nullptr_t p) noexcept { return !(bool)f; }
-    friend bool operator==(std::nullptr_t p, const StaticFunction &f) noexcept { return !(bool)f; }
-    friend bool operator!=(const StaticFunction &f, std::nullptr_t p) noexcept { return (bool)f; }
-    friend bool operator!=(std::nullptr_t p, const StaticFunction &f) noexcept { return (bool)f; }
+    friend bool operator==(const SmallFunction &f, std::nullptr_t p) noexcept { return !(bool)f; }
+    friend bool operator==(std::nullptr_t p, const SmallFunction &f) noexcept { return !(bool)f; }
+    friend bool operator!=(const SmallFunction &f, std::nullptr_t p) noexcept { return (bool)f; }
+    friend bool operator!=(std::nullptr_t p, const SmallFunction &f) noexcept { return (bool)f; }
 
 private:
     class ICallable
@@ -182,4 +182,4 @@ private:
     char storage[BufferSize + 8];
 };
 
-}  // namespace cpppg
+}  // namespace ftc

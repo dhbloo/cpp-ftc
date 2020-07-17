@@ -1,19 +1,19 @@
-#include "Function/StaticFunction.hpp"
+#include "FTC/Function/SmallFunction.hpp"
 
 #include <gtest/gtest.h>
 
-using namespace cpppg;
+using namespace ftc;
 
-TEST(StaticFunction, Size)
+TEST(SmallFunction, Size)
 {
-    EXPECT_EQ(sizeof(StaticFunction<void()>), 32);
-    EXPECT_EQ(sizeof(StaticFunction<void(), 8>), 16);
-    EXPECT_EQ(sizeof(StaticFunction<void(), 16>), 24);
-    EXPECT_EQ(sizeof(StaticFunction<void(), 24>), 32);
-    EXPECT_EQ(sizeof(StaticFunction<void(), 32>), 40);
-    EXPECT_EQ(sizeof(StaticFunction<void(), 40>), 48);
-    EXPECT_EQ(sizeof(StaticFunction<void(), 48>), 56);
-    EXPECT_EQ(sizeof(StaticFunction<void(), 56>), 64);
+    EXPECT_EQ(sizeof(SmallFunction<void()>), 32);
+    EXPECT_EQ(sizeof(SmallFunction<void(), 8>), 16);
+    EXPECT_EQ(sizeof(SmallFunction<void(), 16>), 24);
+    EXPECT_EQ(sizeof(SmallFunction<void(), 24>), 32);
+    EXPECT_EQ(sizeof(SmallFunction<void(), 32>), 40);
+    EXPECT_EQ(sizeof(SmallFunction<void(), 40>), 48);
+    EXPECT_EQ(sizeof(SmallFunction<void(), 48>), 56);
+    EXPECT_EQ(sizeof(SmallFunction<void(), 56>), 64);
 }
 
 int func(int x)
@@ -21,17 +21,17 @@ int func(int x)
     return x + 42;
 }
 
-TEST(StaticFunction, FunctionPointer)
+TEST(SmallFunction, FunctionPointer)
 {
-    StaticFunction<int(int)>     sf1(func);
-    StaticFunction<int(int), 8>  sf2(func);
-    StaticFunction<int(int), 16> sf3(func);
-    StaticFunction<int(int), 32> sf4(func);
+    SmallFunction<int(int)>     sf1(func);
+    SmallFunction<int(int), 8>  sf2(func);
+    SmallFunction<int(int), 16> sf3(func);
+    SmallFunction<int(int), 32> sf4(func);
 
-    StaticFunction<int(int)>     sf5 = func;
-    StaticFunction<int(int), 8>  sf6 = func;
-    StaticFunction<int(int), 16> sf7 = func;
-    StaticFunction<int(int), 32> sf8 = func;
+    SmallFunction<int(int)>     sf5 = func;
+    SmallFunction<int(int), 8>  sf6 = func;
+    SmallFunction<int(int), 16> sf7 = func;
+    SmallFunction<int(int), 32> sf8 = func;
     for (int i = 0; i < 10; i++) {
         EXPECT_EQ(sf1(i), i + 42);
         EXPECT_EQ(sf2(i), i + 42);
@@ -44,22 +44,22 @@ TEST(StaticFunction, FunctionPointer)
     }
 }
 
-TEST(StaticFunction, Functor)
+TEST(SmallFunction, Functor)
 {
     struct functor
     {
         int operator()(int x) { return x + 42; }
     } f;
 
-    StaticFunction<int(int)>     sf1(f);
-    StaticFunction<int(int), 8>  sf2(f);
-    StaticFunction<int(int), 16> sf3(f);
-    StaticFunction<int(int), 32> sf4(f);
+    SmallFunction<int(int)>     sf1(f);
+    SmallFunction<int(int), 8>  sf2(f);
+    SmallFunction<int(int), 16> sf3(f);
+    SmallFunction<int(int), 32> sf4(f);
 
-    StaticFunction<int(int)>     sf5 = f;
-    StaticFunction<int(int), 8>  sf6 = f;
-    StaticFunction<int(int), 16> sf7 = f;
-    StaticFunction<int(int), 32> sf8 = f;
+    SmallFunction<int(int)>     sf5 = f;
+    SmallFunction<int(int), 8>  sf6 = f;
+    SmallFunction<int(int), 16> sf7 = f;
+    SmallFunction<int(int), 32> sf8 = f;
     for (int i = 0; i < 10; i++) {
         EXPECT_EQ(sf1(i), i + 42);
         EXPECT_EQ(sf2(i), i + 42);
@@ -72,20 +72,20 @@ TEST(StaticFunction, Functor)
     }
 }
 
-TEST(StaticFunction, Lambda)
+TEST(SmallFunction, Lambda)
 {
     int  y = 42;
     auto f = [y](int x) { return x + y; };
 
-    StaticFunction<int(int)>     sf1(f);
-    StaticFunction<int(int), 8>  sf2(f);
-    StaticFunction<int(int), 16> sf3(f);
-    StaticFunction<int(int), 32> sf4(f);
+    SmallFunction<int(int)>     sf1(f);
+    SmallFunction<int(int), 8>  sf2(f);
+    SmallFunction<int(int), 16> sf3(f);
+    SmallFunction<int(int), 32> sf4(f);
 
-    StaticFunction<int(int)>     sf5 = f;
-    StaticFunction<int(int), 8>  sf6 = f;
-    StaticFunction<int(int), 16> sf7 = f;
-    StaticFunction<int(int), 32> sf8 = f;
+    SmallFunction<int(int)>     sf5 = f;
+    SmallFunction<int(int), 8>  sf6 = f;
+    SmallFunction<int(int), 16> sf7 = f;
+    SmallFunction<int(int), 32> sf8 = f;
     for (int i = 0; i < 10; i++) {
         EXPECT_EQ(sf1(i), i + 42);
         EXPECT_EQ(sf2(i), i + 42);
@@ -98,17 +98,17 @@ TEST(StaticFunction, Lambda)
     }
 }
 
-TEST(StaticFunction, Assign)
+TEST(SmallFunction, Assign)
 {
     int  y = 42;
     auto f = [y](int x) { return x + y; };
 
-    StaticFunction<int(int)> sf1(f);
-    StaticFunction<int(int)> sf2(sf1);
-    StaticFunction<int(int)> sf3(sf2);
-    StaticFunction<int(int)> sf4 = sf3;
-    StaticFunction<int(int)> sf5 = sf4;
-    StaticFunction<int(int)> sf6;
+    SmallFunction<int(int)> sf1(f);
+    SmallFunction<int(int)> sf2(sf1);
+    SmallFunction<int(int)> sf3(sf2);
+    SmallFunction<int(int)> sf4 = sf3;
+    SmallFunction<int(int)> sf5 = sf4;
+    SmallFunction<int(int)> sf6;
     sf6 = sf5;
 
     for (int i = 0; i < 10; i++) {
@@ -120,14 +120,14 @@ TEST(StaticFunction, Assign)
     }
 }
 
-TEST(StaticFunction, OperatorBool)
+TEST(SmallFunction, OperatorBool)
 {
     int  y = 42;
     auto f = [y](int x) { return x + y; };
 
-    StaticFunction<int(int)> sf1(f);
-    StaticFunction<int(int)> sf2;
-    StaticFunction<int(int)> sf3 = sf1;
+    SmallFunction<int(int)> sf1(f);
+    SmallFunction<int(int)> sf2;
+    SmallFunction<int(int)> sf3 = sf1;
 
     EXPECT_EQ((bool)sf1, true);
     EXPECT_EQ((bool)sf2, false);
@@ -137,14 +137,14 @@ TEST(StaticFunction, OperatorBool)
     EXPECT_EQ((bool)sf3, false);
 }
 
-TEST(StaticFunction, OperatorEqual)
+TEST(SmallFunction, OperatorEqual)
 {
     int  y = 42;
     auto f = [y](int x) { return x + y; };
 
-    StaticFunction<int(int)> sf1(f);
-    StaticFunction<int(int)> sf2;
-    StaticFunction<int(int)> sf3 = sf1;
+    SmallFunction<int(int)> sf1(f);
+    SmallFunction<int(int)> sf2;
+    SmallFunction<int(int)> sf3 = sf1;
 
     EXPECT_EQ(sf1 == nullptr, false);
     EXPECT_EQ(sf1 != nullptr, true);
