@@ -108,11 +108,11 @@ template <typename F> constexpr auto ForEach(F &&func);
 
 /// Find the first element in an argument list that evaluates f(x) to true.
 ///
-/// Applies f to each element x of the argument list, from left to right, until
-/// f(x) evaluates to true. It returns optional{x} if such an x exists; otherwise
-/// it returns none optional{}.
-/// Note: Variadic arguments must have homogeneous types, otherwise it will fail
-/// to compile.
+/// Applies f to each element x of the argument list, from left to right, until f(x)
+/// evaluates to true. It returns optional{x} if such an x exists; otherwise it returns
+/// none optional{}.
+///
+/// @note Variadic arguments must have homogeneous types, otherwise it will fail to compile.
 ///
 /// @param func Predicate functor
 /// @return A functor that takes the actual arguments and returns optional value.
@@ -234,7 +234,7 @@ constexpr auto ReplaceAt(Val &&value, F &&funcToForward);
 
 /// Permute an argument list using given index, then forward them to the given functor.
 ///
-/// Note: Each index must be inside the range of argument list. Negetive index refers to
+/// @note Each index must be inside the range of argument list. Negetive index refers to
 /// the element counted from back.
 /// 
 /// @tparam Idx... A sequence of indices to permute argument list.
@@ -259,7 +259,7 @@ template <std::size_t N, typename F> constexpr auto IndexSequence(F &&funcToForw
 /// IntSequence generates a similar sequence to what for-loop generates. Given beginning
 /// index, ending index and step, the generated sequence is identical to this for-loop:
 ///     for (int i = Begin; Step > 0 ? i < End : i > End; i += Step) { ... }
-/// Note: Step must not be zero and range must be vaild, otherwise it will fail to compile.
+/// @note Step must not be zero and range must be vaild, otherwise it will fail to compile.
 ///
 /// @tparam Begin Beginning index
 /// @tparam End   Ending index
@@ -270,6 +270,9 @@ constexpr auto IntSequence(F &&funcToForward);
 
 }  // namespace ftc::variadic
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Implementation
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace ftc::variadic {

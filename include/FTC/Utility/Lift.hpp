@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Fwd.hpp"
+/// A helper to forward variadic arguments.
+#define __FWD(...) std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
 
 /// Internal macro: return expr in a lambda
 #define __RETURNS(expr) \
@@ -13,16 +14,16 @@
 ///
 /// @see https://florianjw.de/en/passing_overloaded_functions.html
 /// @see https://akrzemi1.wordpress.com/2018/07/07/functions-in-std/
-#define LIFT(...) [](auto &&... args) __RETURNS(__VA_ARGS__(FWD(args)...))
+#define LIFT(...) [](auto &&... args) __RETURNS(__VA_ARGS__(__FWD(args)...))
 
 /// A helper to pass overloaded unary operator as an argument.
-#define LIFT_UNARY_OP(op) [](auto &&arg1) __RETURNS(op FWD(arg1))
+#define LIFT_UNARY_OP(op) [](auto &&arg1) __RETURNS(op __FWD(arg1))
 
 /// A helper to pass overloaded (post) unary operator as an argument.
 ///
-/// Note: This can be used to access member of an object, eg. LIFT_POST_UNARY_OP(.xxx), or
+/// @note This can be used to access member of an object, eg. LIFT_POST_UNARY_OP(.xxx), or
 ///       invoke a member function, eg. LIFT_POST_UNARY_OP(.fun(xxx...))
-#define LIFT_POST_UNARY_OP(op) [](auto &&arg1) __RETURNS(FWD(arg1) op)
+#define LIFT_POST_UNARY_OP(op) [](auto &&arg1) __RETURNS(__FWD(arg1) op)
 
 /// A helper to pass overloaded binary operator as an argument.
-#define LIFT_BINARY_OP(op) [](auto &&arg1, auto &&arg2) __RETURNS(FWD(arg1) op FWD(arg2))
+#define LIFT_BINARY_OP(op) [](auto &&arg1, auto &&arg2) __RETURNS(__FWD(arg1) op __FWD(arg2))
