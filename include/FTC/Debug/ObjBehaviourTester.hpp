@@ -15,7 +15,7 @@ namespace {
     };
 }  // namespace
 
-template <typename OutputWarpper = StdoutWrapper, std::size_t NameSize = 8>
+template <typename OutputWarpper = StdoutWrapper, std::size_t NameSize = 16>
 class ObjBehaviourTester
 {
 public:
