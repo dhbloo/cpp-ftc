@@ -67,6 +67,43 @@ private:
     int idOffset;
 };
 
+class D
+    : public DynamicSingleton<D>
+    , public ObjBehaviourTester<>
+{
+public:
+    D() : ObjBehaviourTester<>("D") {}
+    ~D() = default;
+
+    int GetId() { return 'D'; }
+};
+
+
+class DWithCreator;
+struct DCreator
+{
+    DWithCreator operator()();
+};
+
+class DWithCreator
+    : public DynamicSingleton<DWithCreator, DCreator>
+    , public ObjBehaviourTester<>
+{
+public:
+    DWithCreator(int idOffset) : ObjBehaviourTester<>("DWithCreator"), idOffset(idOffset) {}
+    ~DWithCreator() = default;
+
+    int GetId() { return 'D' + idOffset; }
+
+private:
+    int idOffset;
+};
+
+DWithCreator DCreator::operator()()
+{
+    return DWithCreator(400);
+}
+
 int main()
 {
     std::cout << "========== main() started ==========\n";
@@ -75,6 +112,10 @@ int main()
     std::cout << B::Get().GetId() << '\n';
     std::cout << C::Get(1000).GetId() << '\n';
     std::cout << C::Get(2000).GetId() << '\n';
+    std::cout << D::Get().GetId() << '\n';
+    D::FreeInstance();
+    std::cout << D::Get().GetId() << '\n';
+    std::cout << DWithCreator::Get().GetId() << '\n';
 
     std::cout << "========== main() ended ==========\n";
 }
