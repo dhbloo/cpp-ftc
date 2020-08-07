@@ -1,6 +1,6 @@
 #include "FTC/Mixin/Singleton.hpp"
 
-#include "FTC/Debug/ObjBehaviourTester.hpp"
+#include "FTC/Debug/LifetimeTester.hpp"
 
 #include <iostream>
 
@@ -8,10 +8,10 @@ using namespace ftc;
 
 class A
     : public GlobalSingleton<A>
-    , public ObjBehaviourTester<>
+    , public LifetimeTester<>
 {
 public:
-    A() : ObjBehaviourTester<>("A") {}
+    A() : LifetimeTester<>("A") {}
     ~A() = default;
 
     int GetId() { return 'A'; }
@@ -25,10 +25,10 @@ struct ACreator
 
 class AWithCreator
     : public GlobalSingleton<AWithCreator, ACreator>
-    , public ObjBehaviourTester<>
+    , public LifetimeTester<>
 {
 public:
-    AWithCreator(int idOffset) : ObjBehaviourTester<>("AWithCreator"), idOffset(idOffset) {}
+    AWithCreator(int idOffset) : LifetimeTester<>("AWithCreator"), idOffset(idOffset) {}
     ~AWithCreator() = default;
 
     int GetId() { return 'A' + idOffset; }
@@ -44,10 +44,10 @@ AWithCreator ACreator::operator()()
 
 class B
     : public StaticSingleton<B>
-    , public ObjBehaviourTester<>
+    , public LifetimeTester<>
 {
 public:
-    B() : ObjBehaviourTester<>("B") {}
+    B() : LifetimeTester<>("B") {}
     ~B() = default;
 
     int GetId() { return 'B'; }
@@ -55,10 +55,10 @@ public:
 
 class C
     : public DelayedStaticSingleton<C>
-    , public ObjBehaviourTester<>
+    , public LifetimeTester<>
 {
 public:
-    C(int idOffset) : ObjBehaviourTester<>("C"), idOffset(idOffset) {}
+    C(int idOffset) : LifetimeTester<>("C"), idOffset(idOffset) {}
     ~C() = default;
 
     int GetId() { return 'C' + idOffset; }
@@ -69,10 +69,10 @@ private:
 
 class D
     : public DynamicSingleton<D>
-    , public ObjBehaviourTester<>
+    , public LifetimeTester<>
 {
 public:
-    D() : ObjBehaviourTester<>("D") {}
+    D() : LifetimeTester<>("D") {}
     ~D() = default;
 
     int GetId() { return 'D'; }
@@ -87,10 +87,10 @@ struct DCreator
 
 class DWithCreator
     : public DynamicSingleton<DWithCreator, DCreator>
-    , public ObjBehaviourTester<>
+    , public LifetimeTester<>
 {
 public:
-    DWithCreator(int idOffset) : ObjBehaviourTester<>("DWithCreator"), idOffset(idOffset) {}
+    DWithCreator(int idOffset) : LifetimeTester<>("DWithCreator"), idOffset(idOffset) {}
     ~DWithCreator() = default;
 
     int GetId() { return 'D' + idOffset; }

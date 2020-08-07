@@ -31,24 +31,23 @@ public:
 
 /// Singleton Mixin with global lifetime
 /// @tparam T Singleton class
-/// @tparam CreateFunc A function that returns a created prvalue of T
+/// @tparam CreateFunc A functor that returns a created prvalue of T
 template <class T, typename Creator = void> class GlobalSingleton : public ISingleton<T>
 {
     static_assert(std::is_same_v<result_of_t<Creator>, T>,
                   "Creator must be a function object which returns a value of type T");
 
 public:
-    static T &Get() { return *instancePtr; }
+    static T &Get() { return holder.GetInstance(); }
 
 private:
-    struct GlobalLifeTimePtr;
-
-    // inline static std::unique_ptr<T> instancePtr {std::make_unique<T>(std::move(CreateFunc()))};
-    inline static GlobalLifeTimePtr instancePtr;
+    struct InstanceHolder;
+    inline static InstanceHolder holder;
 };
 
 /// Singleton Mixin using C++11 static function variable
 /// @tparam T Singleton class
+/// @tparam CreateFunc A functor that returns a created prvalue of T
 template <class T, typename Creator = void> class StaticSingleton : public ISingleton<T>
 {
     static_assert(std::is_same_v<result_of_t<Creator>, T>,
@@ -58,7 +57,7 @@ public:
     /// Gets the singleton instance of class type T
     /// @return The singleton instance of class type T
     /// @note Instance is initialized on the first call of Get()
-    template <typename... Ts> static T &Get()
+    static T &Get()
     {
         static T instance {Creator {}()};
         return instance;
@@ -67,7 +66,7 @@ public:
 
 /// Singleton Mixin using C++11 static function variable and delayed argument initialization
 /// @tparam T Singleton class
-template <class T, typename Creator = void> class DelayedStaticSingleton : public ISingleton<T>
+template <class T> class DelayedStaticSingleton : public ISingleton<T>
 {
 public:
     /// Gets the singleton instance of class type T, the initialization is guaranteed to be
@@ -83,6 +82,8 @@ public:
 
 /// Singleton Mixin with explicit lifetime control (thread-safe)
 /// @tparam T Singleton class
+/// @tparam CreateFunc A functor that returns a created prvalue of T
+/// @tparam Allocator Allocator to use for dynamic allocation
 template <class T, typename Creator = void, typename Allocator = std::allocator<T>>
 class DynamicSingleton : public ISingleton<T>
 {
@@ -116,31 +117,34 @@ private:
 
 namespace ftc {
 
-template <class T, typename Creator> struct GlobalSingleton<T, Creator>::GlobalLifeTimePtr
+template <class T, typename Creator> struct GlobalSingleton<T, Creator>::InstanceHolder
 {
-    GlobalLifeTimePtr() noexcept { ptr = new T {Creator {}()}; }
-    ~GlobalLifeTimePtr() { delete ptr; }
-    operator T *() const { return ptr; }
-
+    InstanceHolder()
+    {
+        static T instance {Creator {}()};
+        ptr = &instance;
+    }
+    T &GetInstance() { return *ptr; }
     T *ptr;
 };
 
 template <class T> class GlobalSingleton<T, void> : public ISingleton<T>
 {
 public:
-    static T &Get() { return *instancePtr; }
+    static T &Get() { return holder.GetInstance(); }
 
 private:
-    struct GlobalLifeTimePtr
+    struct InstanceHolder
     {
-        GlobalLifeTimePtr() noexcept { ptr = new T; }
-        ~GlobalLifeTimePtr() { delete ptr; }
-        operator T *() const { return ptr; }
-
+        InstanceHolder()
+        {
+            static T instance;
+            ptr = &instance;
+        }
+        T &GetInstance() { return *ptr; }
         T *ptr;
     };
-
-    inline static GlobalLifeTimePtr instancePtr;
+    inline static InstanceHolder holder;
 };
 
 template <class T> class StaticSingleton<T, void> : public ISingleton<T>
@@ -165,7 +169,7 @@ struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy
 {
     static void Construct(AlTy &allocator, T *instancePtr)
     {
-        AlTraits::construct(allocator, instancePtr, Creator {}());
+        AlTraits::construct(allocator, instancePtr, InCreator {}());
     }
 };
 

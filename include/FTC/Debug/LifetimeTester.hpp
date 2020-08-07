@@ -1,4 +1,10 @@
+/**
+ * @file LifetimeTester.hpp
+ * Object Lifetime Tester
+ */
+
 #pragma once
+
 #include <cstring>
 #include <iostream>
 
@@ -16,38 +22,38 @@ namespace {
 }  // namespace
 
 template <typename OutputWarpper = StdoutWrapper, std::size_t NameSize = 16>
-class ObjBehaviourTester
+class LifetimeTester
 {
 public:
-    ObjBehaviourTester(const char *_name = "Unnamed")
+    LifetimeTester(const char *_name = "Unnamed")
     {
         strncpy(name, _name, sizeof(name));
         OutputWarpper() << name << ": Default constructor called.\n";
     }
 
-    ObjBehaviourTester(const ObjBehaviourTester &t)
+    LifetimeTester(const LifetimeTester &t)
     {
         strncpy(name, t.name, sizeof(name));
         OutputWarpper() << name << ": Copy constructor called.\n";
     }
-    ObjBehaviourTester(ObjBehaviourTester &&t)
+    LifetimeTester(LifetimeTester &&t)
     {
         strncpy(name, t.name, sizeof(name));
         OutputWarpper() << name << ": Move constructor called.\n";
     }
 
-    ObjBehaviourTester &operator=(const ObjBehaviourTester &t)
+    LifetimeTester &operator=(const LifetimeTester &t)
     {
         strncpy(name, t.name, sizeof(name));
         OutputWarpper() << name << ": Copy Assignment called.\n";
     }
-    ObjBehaviourTester &operator=(ObjBehaviourTester &&t)
+    LifetimeTester &operator=(LifetimeTester &&t)
     {
         strncpy(name, t.name, sizeof(name));
         OutputWarpper() << name << ": Move Assignment called.\n";
     }
 
-    ~ObjBehaviourTester() { OutputWarpper() << name << ": Destructor called.\n"; }
+    ~LifetimeTester() { OutputWarpper() << name << ": Destructor called.\n"; }
 
 private:
     char name[NameSize];

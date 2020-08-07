@@ -1,6 +1,6 @@
 #include "FTC/Function/SmallFunction.hpp"
 
-#include "FTC/Debug/ObjBehaviourTester.hpp"
+#include "FTC/Debug/LifetimeTester.hpp"
 
 #include <iostream>
 #include <memory>
@@ -91,10 +91,10 @@ void sample1()
 
 void sample2()
 {
-    auto lambda1 = [obj = ObjBehaviourTester<>("1")]() {};
-    auto lambda2 = [obj = ObjBehaviourTester<>("2")]() {};
-    auto lambda3 = [obj = ObjBehaviourTester<>("3")]() {};
-    auto lambda4 = [obj = ObjBehaviourTester<>("4")]() {};
+    auto lambda1 = [obj = LifetimeTester<>("1")]() {};
+    auto lambda2 = [obj = LifetimeTester<>("2")]() {};
+    auto lambda3 = [obj = LifetimeTester<>("3")]() {};
+    auto lambda4 = [obj = LifetimeTester<>("4")]() {};
 
     std::cout << "====================" << std::endl;
 

@@ -14,32 +14,32 @@
 
 namespace ftc {
 
-/// Get the return type of a callable type
+/// Gets the return type of a callable type
+/// @note The callable type must not be overloaded, otherwise use std::invoke_result instead.
 template <typename F> struct result_of;
 template <typename F> using result_of_t = typename result_of<F>::type;
 
-/// Get the argument count of a callable type
+/// Gets the argument count of a callable type
 template <typename F> struct arity_of;
 template <typename F> inline constexpr std::size_t arity_of_v = arity_of<F>::value;
 
-/// Get Nth argument type of a callable type
+/// Gets Nth argument type of a callable type
 template <typename F, std::size_t N> struct arg_at;
 template <typename F, std::size_t N> using arg_at_t = typename arg_at<F, N>::type;
 
-/// Get the class type of a member function pointer type
+/// Gets the class type of a member function pointer type
 template <typename F> struct class_of_member_func;
 template <typename F> using class_of_member_func_t = typename class_of_member_func<F>::type;
 
-/// Get the argument count of a callable
+/// Gets the argument count of a callable
 template <typename F> constexpr std::size_t ArityOf(F &&f);
 
-/// Get the invoked callable type of a overload set using Args as argument types
+/// Gets the invoked callable type of a overload set using Args as argument types
 ///
 /// @note Needs C++20 support
 #define INVOKE_FUNC_T(f, ...) std::invoke_result_t<decltype(LIFT(f)), __VA_ARGS__>
 
 }  // namespace ftc
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Implementation

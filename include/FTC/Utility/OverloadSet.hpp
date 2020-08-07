@@ -2,7 +2,7 @@
  * @file OverloadSet.hpp
  * Overload Set
  *
- * Provide a utility class for implementing overload set.
+ * Provides a utility class for implementing overload set.
  */
 
 #pragma once
@@ -16,7 +16,7 @@ template <typename... F> struct OverloadSet : public F...
     using F::operator()...;
 };
 
-/// Generate an overload set from a list of functions
+/// Generates an overload set from a list of functions
 /// @param f A list of functions to overload
 template <typename... F> OverloadSet<F...> Overload(F &&... f)
 {

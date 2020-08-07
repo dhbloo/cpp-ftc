@@ -19,19 +19,19 @@ namespace ftc::variadic {
    Variadic type traits & type alias
    ------------------------------------------------------------------------- */
 
-/// Check if variadic types are same
+/// Checks if variadic types are same
 template <typename... Ts> struct are_same;
 template <typename... Ts> inline constexpr bool are_same_v = are_same<Ts...>::value;
 
-/// Get the first type in a type list
+/// Gets the first type in a type list
 template <typename... Ts> struct head;
 template <typename... Ts> using head_t = typename head<Ts...>::type;
 
-/// Get the last type in a type list
+/// Gets the last type in a type list
 template <typename... Ts> struct last;
 template <typename... Ts> using last_t = typename last<Ts...>::type;
 
-/// Get type at Idx in a variadic type pack
+/// Gets type at Idx in a variadic type pack
 template <std::size_t Idx, typename... Ts> struct type_at;
 template <std::size_t Idx, typename... Ts> using type_at_t = typename type_at<Idx, Ts...>::type;
 
@@ -39,19 +39,19 @@ template <std::size_t Idx, typename... Ts> using type_at_t = typename type_at<Id
    Variadic arguments query functions
    ------------------------------------------------------------------------- */
 
-/// Check if parameter pack is empty
+/// Checks if parameter pack is empty
 template <typename... Ts> constexpr bool IsEmpty(Ts &&... vs);
 
-/// Return the length of a parameter pack
+/// Returns the length of a parameter pack
 template <typename... Ts> constexpr auto Length(Ts &&... vs);
 
-/// Return the head element of a parameter list
+/// Returns the head element of a parameter list
 template <typename... Ts> constexpr auto Head(Ts &&... vs);
 
-/// Return the last element of a parameter list
+/// Returns the last element of a parameter list
 template <typename... Ts> constexpr auto Last(Ts &&... vs);
 
-/// Return the n-th element of a parameter list
+/// Returns the n-th element of a parameter list
 ///
 /// Negative Idx refers to reversed list, eg. -1 gives the last parameter,
 /// -2 gaives penultimate parameter.
@@ -66,14 +66,14 @@ template <int Idx, typename... Ts> constexpr auto Get(Ts &&... vs);
    a functor that takes the actual variadic arguments.
    ------------------------------------------------------------------------- */
 
-/// Return f(xn,...,f(x2, f(x1, init))...) or init if parameter list is empty.
+/// Returns f(xn,...,f(x2, f(x1, init))...) or init if parameter list is empty.
 ///
 /// @param func Reducer functor
 /// @param init Initial value
 /// @return A functor that takes the actual arguments.
 template <typename F, typename Acc> constexpr auto Foldl(F &&func, Acc &&init);
 
-/// Return f(xn,...,f(x3, f(x2, x1))...)
+/// Returns f(xn,...,f(x3, f(x2, x1))...)
 ///
 /// The variadic argument list should contain at least 2 elements.
 ///
@@ -81,14 +81,14 @@ template <typename F, typename Acc> constexpr auto Foldl(F &&func, Acc &&init);
 /// @return A functor that takes the actual arguments.
 template <typename F> constexpr auto Foldl(F &&func);
 
-/// Return f(x1, f(x2, ..., f(xn, init)...)) or init if parameter list is empty.
+/// Returns f(x1, f(x2, ..., f(xn, init)...)) or init if parameter list is empty.
 ///
 /// @param func Reducer functor
 /// @param init Initial value
 /// @return A functor that takes the actual arguments.
 template <typename F, typename Acc> constexpr auto Foldr(F &&func, Acc &&init);
 
-/// Return f(x1, f(x2, ..., f(xn-1, xn)...)).
+/// Returns f(x1, f(x2, ..., f(xn-1, xn)...)).
 ///
 /// The variadic argument list should contain at least 2 elements.
 ///
@@ -115,7 +115,7 @@ template <typename F> constexpr auto All(F &&func);
 /// @return A functor that takes the actual arguments and returns void.
 template <typename F> constexpr auto ForEach(F &&func);
 
-/// Find the first element in an argument list that evaluates f(x) to true.
+/// Finds the first element in an argument list that evaluates f(x) to true.
 ///
 /// Applies f to each element x of the argument list, from left to right, until f(x)
 /// evaluates to true. It returns optional{x} if such an x exists; otherwise it returns
@@ -134,31 +134,31 @@ template <typename F> constexpr auto FindFirst(F &&func);
    arguments to the provided functor.
    ------------------------------------------------------------------------- */
 
-/// Reverse an argument list, then forward them to the given functor.
+/// Reverses an argument list, then forward them to the given functor.
 ///
 /// @param  funcToForward A functor to take the transformed arguments.
 /// @return A functor that takes the actual arguments.
 template <typename F> constexpr auto Reverse(F &&funcToForward);
 
-/// Rotate left an argument list, then forward them to the given functor.
+/// Rotates left an argument list, then forward them to the given functor.
 ///
-/// Cyclic left shift N arguments to the right. N must be not less than 0.
+/// Cyclic left shiftes N arguments to the right. N must be not less than 0.
 ///
 /// @tparam N Left shift amount, should be at least 0.
 /// @param  funcToForward A functor to take the transformed arguments.
 /// @return A functor that takes the actual arguments.
 template <std::size_t N, typename F> constexpr auto RotateLeft(F &&funcToForward);
 
-/// Rotate right an argument list, then forward them to the given functor.
+/// Rotates right an argument list, then forward them to the given functor.
 ///
-/// Cyclic right shift N arguments to the right. N must be not less than 0.
+/// Cyclic right shiftes N arguments to the right. N must be not less than 0.
 ///
 /// @tparam N Right shift amount, should be at least 0.
 /// @param  funcToForward A functor to take the transformed arguments.
 /// @return A functor that takes the actual arguments.
 template <std::size_t N, typename F> constexpr auto RotateRight(F &&funcToForward);
 
-/// Rotate an argument list, then forward them to the given functor.
+/// Rotates an argument list, then forward them to the given functor.
 ///
 /// For non-negetive N, this is same as RotateLeft<N>. For negetive N, this is same as
 /// RotateRight<-N>.
@@ -168,7 +168,7 @@ template <std::size_t N, typename F> constexpr auto RotateRight(F &&funcToForwar
 /// @return A functor that takes the actual arguments.
 template <int N, typename F> constexpr auto Rotate(F &&funcToForward);
 
-/// Swap two element in an argument list, then forward them to the given functor.
+/// Swaps two element in an argument list, then forward them to the given functor.
 ///
 /// @tparam I Index of first element.
 /// @tparam J Index of second element.
@@ -176,7 +176,7 @@ template <int N, typename F> constexpr auto Rotate(F &&funcToForward);
 /// @return A functor that takes the actual arguments.
 template <std::size_t I, std::size_t J, typename F> constexpr auto Swap(F &&funcToForward);
 
-/// Take N arguments from the argument list, then forward them to the given functor.
+/// Takes N arguments from the argument list, then forward them to the given functor.
 ///
 /// For positive N, first N arguments are forwarded to the given functor. For negetive N,
 /// last N arguments are forwarded to the given functor. N must be not greater than the
@@ -187,7 +187,7 @@ template <std::size_t I, std::size_t J, typename F> constexpr auto Swap(F &&func
 /// @return A functor that takes the actual arguments.
 template <int N, typename F> constexpr auto Take(F &&funcToForward);
 
-/// Drop N arguments from the argument list, then forward them to the given functor.
+/// Drops N arguments from the argument list, then forward them to the given functor.
 ///
 /// For positive N, all but first N arguments are forwarded to the given functor. For
 /// negetive N, all but last N arguments are forwarded to the given functor. N must be
@@ -198,7 +198,7 @@ template <int N, typename F> constexpr auto Take(F &&funcToForward);
 /// @return A functor that takes the actual arguments.
 template <int N, typename F> constexpr auto Drop(F &&funcToForward);
 
-/// Get arguments in range [N, M), then forward them to the given functor.
+/// Gets arguments in range [N, M), then forward them to the given functor.
 ///
 /// N must be less than M.
 ///
@@ -215,7 +215,7 @@ template <int N, int M, typename F> constexpr auto Slice(F &&funcToForward);
 /// @return A functor that takes the actual arguments.
 template <typename Mapper, typename F> constexpr auto Map(Mapper &&mapper, F &&funcToForward);
 
-/// Remove elements that evaluate the predicate to false in an argument list, then forward them
+/// Removes elements that evaluate the predicate to false in an argument list, then forward them
 /// to the given functor.
 ///
 /// Applies predicate to each element x of the argument list, from left to right, and forwards the
@@ -227,7 +227,7 @@ template <typename Mapper, typename F> constexpr auto Map(Mapper &&mapper, F &&f
 /// @return A functor that takes the actual arguments.
 template <typename Pred, typename F> constexpr auto Filter(Pred &&pred, F &&funcToForward);
 
-/// Replace element at Idx in the argument list to the given value, then forward them to the
+/// Replaces element at Idx in the argument list to the given value, then forward them to the
 /// given functor.
 ///
 /// For non-negetive index, the argument at index counted from beginning is replaced. For
@@ -241,7 +241,7 @@ template <typename Pred, typename F> constexpr auto Filter(Pred &&pred, F &&func
 template <int Idx, typename Val, typename F>
 constexpr auto ReplaceAt(Val &&value, F &&funcToForward);
 
-/// Permute an argument list using given index, then forward them to the given functor.
+/// Permutes an argument list using given index, then forward them to the given functor.
 ///
 /// @note Each index must be inside the range of argument list. Negetive index refers to
 /// the element counted from back.
@@ -255,7 +255,7 @@ template <int... Idx, typename F> constexpr auto Permute(F &&funcToForward);
    Variadic arguments generator functions
    ------------------------------------------------------------------------- */
 
-/// Generate a variadic index sequence, then forward them to the given functor.
+/// Generates a variadic index sequence, then forward them to the given functor.
 ///
 /// Index sequence 0, 1, 2, ..., N-1 will be generated as variadic argument list.
 ///
@@ -263,7 +263,7 @@ template <int... Idx, typename F> constexpr auto Permute(F &&funcToForward);
 /// @param  funcToForward A functor to take the transformed arguments.
 template <std::size_t N, typename F> constexpr auto IndexSequence(F &&funcToForward);
 
-/// Generate a variadic int sequence, then forward them to the given functor.
+/// Generates a variadic int sequence, then forward them to the given functor.
 ///
 /// IntSequence generates a similar sequence to what for-loop generates. Given beginning
 /// index, ending index and step, the generated sequence is identical to this for-loop:
