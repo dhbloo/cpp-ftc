@@ -1,19 +1,22 @@
-// Singleton Mixin
-//
-// Integrate the singleton interface into a class using mixin. Inspired from Loki library.
+/**
+ * @file Singleton.hpp
+ * Singleton Mixins
+ *
+ * Integrate the singleton interface into a class using mixin. Inspired from Loki library.
+ */
 
 #pragma once
 
 #include "FTC/Traits/FunctionTraits.hpp"
 
-#include <atomic>
-#include <memory>
-#include <mutex>
+#include <atomic>  // for std::atomic
+#include <memory>  // for std::allocator_traits
+#include <mutex>   // for std::mutex
 
 namespace ftc {
 
 /* -------------------------------------------------------------------------
-   Singleton Interface type traits & type alias
+   Singleton Interface & Mixins
    ------------------------------------------------------------------------- */
 
 /// Singleton Interface
@@ -137,7 +140,6 @@ private:
         T *ptr;
     };
 
-    // inline static std::unique_ptr<T> instancePtr {std::make_unique<T>()};
     inline static GlobalLifeTimePtr instancePtr;
 };
 
@@ -152,23 +154,27 @@ public:
 };
 
 template <class T, typename Creator, typename Allocator>
-struct DynamicSingleton<T, Creator, Allocator>::ExitGuard 
+struct DynamicSingleton<T, Creator, Allocator>::ExitGuard
 {
     ~ExitGuard() { DynamicSingleton::FreeInstance(); }
 };
 
 template <class T, typename Creator, typename Allocator>
-template <typename AlTy, typename AlTraits, typename InCreator> 
-struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy {
-    static void Construct(AlTy& allocator, T* instancePtr) {
+template <typename AlTy, typename AlTraits, typename InCreator>
+struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy
+{
+    static void Construct(AlTy &allocator, T *instancePtr)
+    {
         AlTraits::construct(allocator, instancePtr, Creator {}());
     }
 };
 
 template <class T, typename Creator, typename Allocator>
-template <typename AlTy, typename AlTraits> 
-struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy<AlTy, AlTraits, void> {
-    static void Construct(AlTy& allocator, T* instancePtr) {
+template <typename AlTy, typename AlTraits>
+struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy<AlTy, AlTraits, void>
+{
+    static void Construct(AlTy &allocator, T *instancePtr)
+    {
         AlTraits::construct(allocator, instancePtr);
     }
 };
@@ -176,13 +182,12 @@ struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy<AlTy, AlTraits, 
 template <class T, typename Creator, typename Allocator>
 T &DynamicSingleton<T, Creator, Allocator>::Get()
 {
-    T* ptr = instancePtr.load(std::memory_order_acquire);
+    T *ptr = instancePtr.load(std::memory_order_acquire);
     if (!ptr) {
         std::scoped_lock lock(mutex);
         ptr = instancePtr.load(std::memory_order_relaxed);
         if (!ptr) {
             ptr = AllocTraits::allocate(allocator, sizeof(T));
-            //AllocTraits::construct(allocator, newInstance, Creator {}());
             ConstructPolicy<AllocTy, AllocTraits, Creator>::Construct(allocator, ptr);
             instancePtr.store(ptr, std::memory_order_release);
         }
@@ -193,7 +198,7 @@ T &DynamicSingleton<T, Creator, Allocator>::Get()
 template <class T, typename Creator, typename Allocator>
 void DynamicSingleton<T, Creator, Allocator>::FreeInstance()
 {
-    T* ptr = instancePtr.load(std::memory_order_acquire);
+    T *ptr = instancePtr.load(std::memory_order_acquire);
     if (ptr) {
         std::scoped_lock lock(mutex);
         ptr = instancePtr.load(std::memory_order_relaxed);

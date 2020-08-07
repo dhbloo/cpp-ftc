@@ -1,4 +1,12 @@
+/**
+ * @file FunctionTraits.hpp
+ * Function Traits
+ *
+ * Some supplementary function traits to STL type traits.
+ */
+
 #pragma once
+
 #include "FTC/Utility/Lift.hpp"
 #include "FTC/Utility/Variadic.hpp"
 

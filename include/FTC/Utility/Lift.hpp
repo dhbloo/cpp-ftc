@@ -1,3 +1,11 @@
+/**
+ * @file Lift.hpp
+ * Lift Macros
+ * 
+ * A set of macros that lift an overloaded set to a regular object which can be passed as an
+ * argument.
+ */
+
 #pragma once
 
 /// A helper to forward variadic arguments.

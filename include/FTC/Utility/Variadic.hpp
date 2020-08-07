@@ -1,4 +1,13 @@
+/**
+ * @file Variadic.hpp
+ * Variadic template utility
+ *
+ * A collection of variadic template utilities that helps query, transform, generate a variadic
+ * template/argument pack.
+ */
+
 #pragma once
+
 #include <cstddef>      // for std::size_t
 #include <optional>     // for std::optional
 #include <type_traits>  // for std::is_same
@@ -236,7 +245,7 @@ constexpr auto ReplaceAt(Val &&value, F &&funcToForward);
 ///
 /// @note Each index must be inside the range of argument list. Negetive index refers to
 /// the element counted from back.
-/// 
+///
 /// @tparam Idx... A sequence of indices to permute argument list.
 /// @param  funcToForward A functor to take the mapped arguments.
 /// @return A functor that takes the actual arguments.
@@ -269,7 +278,6 @@ template <int Begin, int End, int Step = 1, typename F>
 constexpr auto IntSequence(F &&funcToForward);
 
 }  // namespace ftc::variadic
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Implementation
@@ -819,8 +827,7 @@ template <std::size_t N, typename F> constexpr auto IndexSequence(F &&funcToForw
     return detail::GenIndexSequence<N>::call(std::forward<F>(funcToForward));
 }
 
-template <int Begin, int End, int Step, typename F>
-constexpr auto IntSequence(F &&funcToForward)
+template <int Begin, int End, int Step, typename F> constexpr auto IntSequence(F &&funcToForward)
 {
     static_assert(Step != 0, "IntSequence: Step must not be zero");
     static_assert(Step > 0 && Begin <= End || Step < 0 && Begin >= End,

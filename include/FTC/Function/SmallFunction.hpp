@@ -1,4 +1,12 @@
+/**
+ * @file SmallFunction.hpp
+ * Small(static) Function
+ *
+ * A function container just like std::function, but using static buffer for allocation.
+ */
+
 #pragma once
+
 #include <functional>  // for std::bad_function_call
 #include <utility>     // for std::forward, std::move
 
@@ -17,7 +25,7 @@ namespace detail {
         static constexpr bool value = true;
     };
 
-}
+}  // namespace detail
 
 template <typename, std::size_t BufferSize = 24> class SmallFunction; /* undefined */
 
@@ -47,8 +55,8 @@ public:
     SmallFunction(const SmallFunction<Result(Args...), BufferSizeT> &t) noexcept
     {
         static_assert(BufferSizeT <= BufferSize, "buffer size is smaller than needed");
-        const ICallable *_callable = reinterpret_cast<const ICallable *>(
-            reinterpret_cast<const SmallFunction &>(t).storage);
+        const ICallable *_callable =
+            reinterpret_cast<const ICallable *>(reinterpret_cast<const SmallFunction &>(t).storage);
         _callable->Clone((void *)storage);
     }
 
@@ -57,7 +65,7 @@ public:
     {
         static_assert(BufferSizeT <= BufferSize, "buffer size is smaller than needed");
         SmallFunction &other     = reinterpret_cast<SmallFunction &>(t);
-        ICallable *      _callable = reinterpret_cast<ICallable *>(other.storage);
+        ICallable *    _callable = reinterpret_cast<ICallable *>(other.storage);
         _callable->Move((void *)storage);
         other = nullptr;
     }

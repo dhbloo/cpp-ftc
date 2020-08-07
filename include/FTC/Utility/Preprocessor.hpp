@@ -1,9 +1,11 @@
-// Preprocessor Helpers
-// 
-// Provides preprocessor utilty macros for token contatenation, stringify, etc.
+/**
+ * @file OverloadSet.hpp
+ * Preprocessor Helpers
+ *
+ * Provides preprocessor utilty macros for token contatenation, stringify, etc.
+ */
 
 #pragma once
-
 
 /// Make a token into a raw string literal
 #define PP_TOSTRING(x)      PP_TOSTRING_IMPL(x)

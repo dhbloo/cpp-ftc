@@ -1,6 +1,9 @@
-// Auxiliary Mixin
-//
-// Provides some useful miscellaneous mixin, such as Noncopyable, Nonmoveable
+/**
+ * @file Auxiliary.hpp
+ * Auxiliary Mixins
+ *
+ * Provides some useful miscellaneous mixin, such as Noncopyable, Nonmoveable.
+ */
 
 #pragma once
 

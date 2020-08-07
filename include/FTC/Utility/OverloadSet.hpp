@@ -1,9 +1,11 @@
-#pragma once
-
 /**
  * @file OverloadSet.hpp
+ * Overload Set
+ *
  * Provide a utility class for implementing overload set.
  */
+
+#pragma once
 
 namespace ftc {
 
