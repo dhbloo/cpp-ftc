@@ -10,9 +10,16 @@
 #include "FTC/Utility/Lift.hpp"
 #include "FTC/Utility/Variadic.hpp"
 
-#include <cstddef>  // for std::size_t
+#include <cstddef>      // for std::size_t
+#include <type_traits>  // for std::is_function, std::is_same, std::enable_if
 
 namespace ftc {
+
+/// Checks if a type is a callable type (i.e. has operator())
+/// Types like std::function, lambdas, functors, native function are callables.
+/// @note Overloaded callable type can not be detected with this. Use std::is_is_invocable instead.
+template <typename F> struct is_callable;
+template <typename F> inline constexpr bool is_callable_v = is_callable<F>::value;
 
 /// Gets the return type of a callable type
 /// @note The callable type must not be overloaded, otherwise use std::invoke_result instead.
@@ -48,7 +55,16 @@ template <typename F> constexpr std::size_t ArityOf(F &&f);
 namespace ftc {
 
 namespace detail {
-    // All callable type, eg. std::function, functor
+
+    template <typename F, typename = void> struct IsCallable : std::is_function<F>
+    {};
+
+    template <typename F>
+    struct IsCallable<F, std::enable_if_t<std::is_same_v<decltype(void(&F::operator())), void>>>
+        : std::true_type
+    {};
+
+    // All callable types, eg. std::function, lambdas, functors
     template <typename F> struct FunctionTraits
     {
     private:
@@ -94,46 +110,82 @@ namespace detail {
     template <typename F> struct FunctionTraits<F *> : FunctionTraits<F>
     {};
 
-    // Member function pointer
+    // 0. Member function pointer
     template <typename Class, typename Ret, typename... Args>
     struct FunctionTraits<Ret (Class::*)(Args...)> : FunctionTraits<Ret(Class &, Args...)>
     {
         using ClassType = Class;
     };
 
-    // Const member function pointer
+    // 1. Const member function pointer
     template <typename Class, typename Ret, typename... Args>
     struct FunctionTraits<Ret (Class::*)(Args...) const> : FunctionTraits<Ret (Class::*)(Args...)>
     {};
 
-    // Noexcept function pointer
+    // 2. Volatile member function pointer
+    template <typename Class, typename Ret, typename... Args>
+    struct FunctionTraits<Ret (Class::*)(Args...) volatile>
+        : FunctionTraits<Ret (Class::*)(Args...)>
+    {};
+
+    // 3. Const volatile member function pointer
+    template <typename Class, typename Ret, typename... Args>
+    struct FunctionTraits<Ret (Class::*)(Args...) const volatile>
+        : FunctionTraits<Ret (Class::*)(Args...)>
+    {};
+
+    // 4. Noexcept function pointer
     template <typename Class, typename Ret, typename... Args>
     struct FunctionTraits<Ret (Class::*)(Args...) noexcept>
         : FunctionTraits<Ret (Class::*)(Args...)>
     {};
 
-    // Const noexcept member function pointer
+    // 5. Const noexcept member function pointer
     template <typename Class, typename Ret, typename... Args>
     struct FunctionTraits<Ret (Class::*)(Args...) const noexcept>
         : FunctionTraits<Ret (Class::*)(Args...)>
     {};
 
+    // 6. Volatile noexcept member function pointer
+    template <typename Class, typename Ret, typename... Args>
+    struct FunctionTraits<Ret (Class::*)(Args...) volatile noexcept>
+        : FunctionTraits<Ret (Class::*)(Args...)>
+    {};
+
+    // 7. Const volatile noexcept member function pointer
+    template <typename Class, typename Ret, typename... Args>
+    struct FunctionTraits<Ret (Class::*)(Args...) const volatile noexcept>
+        : FunctionTraits<Ret (Class::*)(Args...)>
+    {};
+
 }  // namespace detail
+
+template <typename F>
+struct is_callable : detail::IsCallable<std::remove_pointer_t<std::remove_reference_t<F>>>
+{};
 
 template <typename F> struct result_of
 {
+    static_assert(
+        is_callable_v<F> || std::is_member_function_pointer_v<F>,
+        "result_of: Type must be an unoverloaded callable type or a member function pointer");
     using type = typename detail::FunctionTraits<F>::RetType;
 };
 
 template <typename F> struct arity_of
 {
+    static_assert(
+        is_callable_v<F> || std::is_member_function_pointer_v<F>,
+        "arity_of: Type must be an unoverloaded callable type or a member function pointer");
     static constexpr std::size_t value = detail::FunctionTraits<F>::ArgCount;
 };
 
 template <typename F, std::size_t N> struct arg_at
 {
+    static_assert(
+        is_callable_v<F> || std::is_member_function_pointer_v<F>,
+        "arg_at: Type must be an unoverloaded callable type or a member function pointer");
     static_assert(N < arity_of_v<F>, "arg_at: Argument index out of range");
-
     using type = typename detail::FunctionTraits<F>::template Argument<N>::type;
 };
 
@@ -141,7 +193,6 @@ template <typename F> struct class_of_member_func
 {
     static_assert(std::is_member_function_pointer_v<F>,
                   "class_of_member_func: Must be a member function pointer");
-
     using type = typename detail::FunctionTraits<F>::ClassType;
 };
 
