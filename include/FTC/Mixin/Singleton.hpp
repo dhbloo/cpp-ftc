@@ -15,6 +15,11 @@
 
 namespace ftc {
 
+template <typename T> struct DefaultCreator
+{
+    constexpr T operator()() const { return T {}; }
+};
+
 /* -------------------------------------------------------------------------
    Singleton Interface & Mixins
    ------------------------------------------------------------------------- */
@@ -32,7 +37,7 @@ public:
 /// Singleton Mixin with global lifetime
 /// @tparam T Singleton class
 /// @tparam CreateFunc A functor that returns a created prvalue of T
-template <class T, typename Creator = void> class GlobalSingleton : public ISingleton<T>
+template <class T, typename Creator = DefaultCreator<T>> class GlobalSingleton : public ISingleton<T>
 {
     static_assert(std::is_same_v<result_of_t<Creator>, T>,
                   "Creator must be a function object which returns a value of type T");
@@ -48,7 +53,7 @@ private:
 /// Singleton Mixin using C++11 static function variable
 /// @tparam T Singleton class
 /// @tparam CreateFunc A functor that returns a created prvalue of T
-template <class T, typename Creator = void> class StaticSingleton : public ISingleton<T>
+template <class T, typename Creator = DefaultCreator<T>> class StaticSingleton : public ISingleton<T>
 {
     static_assert(std::is_same_v<result_of_t<Creator>, T>,
                   "Creator must be a function object which returns a value of type T");
@@ -84,7 +89,7 @@ public:
 /// @tparam T Singleton class
 /// @tparam CreateFunc A functor that returns a created prvalue of T
 /// @tparam Allocator Allocator to use for dynamic allocation
-template <class T, typename Creator = void, typename Allocator = std::allocator<T>>
+template <class T, typename Creator = DefaultCreator<T>, typename Allocator = std::allocator<T>>
 class DynamicSingleton : public ISingleton<T>
 {
 public:
@@ -128,35 +133,6 @@ template <class T, typename Creator> struct GlobalSingleton<T, Creator>::Instanc
     T *ptr;
 };
 
-template <class T> class GlobalSingleton<T, void> : public ISingleton<T>
-{
-public:
-    static T &Get() { return holder.GetInstance(); }
-
-private:
-    struct InstanceHolder
-    {
-        InstanceHolder()
-        {
-            static T instance;
-            ptr = &instance;
-        }
-        T &GetInstance() { return *ptr; }
-        T *ptr;
-    };
-    inline static InstanceHolder holder;
-};
-
-template <class T> class StaticSingleton<T, void> : public ISingleton<T>
-{
-public:
-    template <typename... Ts> static T &Get()
-    {
-        static T instance;
-        return instance;
-    }
-};
-
 template <class T, typename Creator, typename Allocator>
 struct DynamicSingleton<T, Creator, Allocator>::ExitGuard
 {
@@ -169,13 +145,14 @@ struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy
 {
     static void Construct(AlTy &allocator, T *instancePtr)
     {
-        AlTraits::construct(allocator, instancePtr, InCreator {}());
+        ::new (static_cast<void *>(instancePtr)) T(InCreator {}());
+        //AlTraits::construct(allocator, instancePtr, InCreator {}());
     }
 };
 
 template <class T, typename Creator, typename Allocator>
 template <typename AlTy, typename AlTraits>
-struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy<AlTy, AlTraits, void>
+struct DynamicSingleton<T, Creator, Allocator>::ConstructPolicy<AlTy, AlTraits, DefaultCreator<T>>
 {
     static void Construct(AlTy &allocator, T *instancePtr)
     {

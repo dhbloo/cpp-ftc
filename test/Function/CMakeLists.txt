@@ -1,5 +1,5 @@
-set(SRC ${CMAKE_SOURCE_DIR}/include/FTC/Function)
+set(SRC ${SRC}/Function)
 
 add_executable(Test_SmallFunction ./SmallFunction.cpp ${SRC}/SmallFunction.hpp)
-target_link_libraries(Test_SmallFunction gtest_main)
+target_link_libraries(Test_SmallFunction FTC gtest_main)
 add_test(NAME SmallFunctionTest COMMAND Test_SmallFunction)

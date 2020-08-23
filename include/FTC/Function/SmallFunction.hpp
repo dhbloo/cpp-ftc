@@ -12,6 +12,8 @@
 
 namespace ftc {
 
+template <typename, std::size_t BufferSize = 24> class SmallFunction; /* undefined */
+
 namespace detail {
 
     template <typename T> struct __is_small_function
@@ -26,8 +28,6 @@ namespace detail {
     };
 
 }  // namespace detail
-
-template <typename, std::size_t BufferSize = 24> class SmallFunction; /* undefined */
 
 template <typename Result, typename... Args, std::size_t BufferSize>
 class SmallFunction<Result(Args...), BufferSize>

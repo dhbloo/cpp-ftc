@@ -1,5 +1,6 @@
-
 #include "FTC/String/ConstString.hpp"
+
+#include <iostream>
 
 using namespace ftc;
 
