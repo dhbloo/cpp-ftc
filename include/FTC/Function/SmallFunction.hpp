@@ -29,6 +29,11 @@ namespace detail {
 
 }  // namespace detail
 
+
+/// Function container with static storage size
+/// @tparam Result Function return type
+/// @tparam Args Function argument types
+/// @tparam BufferSize Storage size, default is 24.
 template <typename Result, typename... Args, std::size_t BufferSize>
 class SmallFunction<Result(Args...), BufferSize>
 {
@@ -140,13 +145,24 @@ public:
         return *this;
     }
 
+    /// Checks if a function is contained
     explicit operator bool() const noexcept { return ((ICallable *)storage)->IsNotEmpty(); }
+
+    /// Invokes the function
+    /// 
+    /// Throws std::bad_function_call if no function is contained.
+    /// 
+    /// @param args Function arguments
+    /// @return Function call result
     Result   operator()(Args... args) const { return ((ICallable *)storage)->Invoke(args...); }
 
+    /// @name Compares a SmallFunction with nullptr
+    /// @{
     friend bool operator==(const SmallFunction &f, std::nullptr_t p) noexcept { return !(bool)f; }
     friend bool operator==(std::nullptr_t p, const SmallFunction &f) noexcept { return !(bool)f; }
     friend bool operator!=(const SmallFunction &f, std::nullptr_t p) noexcept { return (bool)f; }
     friend bool operator!=(std::nullptr_t p, const SmallFunction &f) noexcept { return (bool)f; }
+    /// @}
 
 private:
     class ICallable

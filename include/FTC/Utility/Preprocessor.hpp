@@ -7,6 +7,9 @@
 
 #pragma once
 
+/// @defgroup Preprocessor Preprocessor Utilities
+/// @{
+
 /// Makes a token into a raw string literal
 #define PP_TOSTRING(x)      PP_TOSTRING_IMPL(x)
 #define PP_TOSTRING_IMPL(x) #x
@@ -23,3 +26,4 @@
 #define PP_CONCAT_FIRST(x, ...)      PP_CONCAT_FIRST_IMPL(x, __VA_ARGS__)
 #define PP_CONCAT_FIRST_IMPL(x, ...) x ## __VA_ARGS__
 
+/// @}

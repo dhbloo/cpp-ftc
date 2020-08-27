@@ -8,10 +8,13 @@
 
 #pragma once
 
-/// A helper to forward variadic arguments.
+/// @defgroup Lift Function & Operator Lifters
+/// @{
+
+// A helper to forward variadic arguments.
 #define __FWD(...) std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
 
-/// Internal macro: return expr in a lambda
+// Internal macro: return expr in a lambda
 #define __RETURNS(expr) \
     noexcept(noexcept(expr))->decltype(auto) { return (expr); }
 
@@ -35,3 +38,5 @@
 
 /// A helper to pass overloaded binary operator as an argument.
 #define LIFT_BINARY_OP(op) [](auto &&arg1, auto &&arg2) __RETURNS(__FWD(arg1) op __FWD(arg2))
+
+/// @}

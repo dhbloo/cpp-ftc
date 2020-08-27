@@ -15,6 +15,9 @@
 
 namespace ftc::variadic {
 
+/// @defgroup Variadic Variadic Pack Utilities
+/// @{
+
 /* -------------------------------------------------------------------------
    Variadic type traits & type alias
    ------------------------------------------------------------------------- */
@@ -93,7 +96,6 @@ template <typename F, typename Acc> constexpr auto Foldr(F &&func, Acc &&init);
 /// The variadic argument list should contain at least 2 elements.
 ///
 /// @param func Reducer functor
-/// @param init Initial value
 /// @return A functor that takes the actual arguments.
 template <typename F> constexpr auto Foldr(F &&func);
 
@@ -276,6 +278,8 @@ template <std::size_t N, typename F> constexpr auto IndexSequence(F &&funcToForw
 /// @param  funcToForward A functor to take the transformed arguments.
 template <int Begin, int End, int Step = 1, typename F>
 constexpr auto IntSequence(F &&funcToForward);
+
+/// @}
 
 }  // namespace ftc::variadic
 

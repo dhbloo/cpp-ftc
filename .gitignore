@@ -39,3 +39,6 @@ build/
 
 # Vs
 .vs/
+
+# Doxygen docs
+doc/

@@ -9,6 +9,9 @@
 
 namespace ftc {
 
+/// @defgroup Auxiliary Auxiliary Mixins
+/// @{
+
 /// Non-copyable base class
 ///
 /// Disable copy construction and copy assignment for one class
@@ -68,5 +71,7 @@ protected:
     NonCopyMovable(NonCopyMovable &&) = delete;
     NonCopyMovable &operator=(NonCopyMovable &&) = delete;
 };
+
+/// @}
 
 }  // namespace ftc

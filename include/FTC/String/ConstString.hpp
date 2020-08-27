@@ -12,6 +12,9 @@
 
 namespace ftc {
 
+/// @defgroup CString Compile Time Strings
+/// @{
+
 // Forward declaration
 template <size_t Len> class ConstString;
 
@@ -29,7 +32,7 @@ template <size_t Len> class StringLiteral
 public:
     typedef const char (&LiteralType)[Len + 1];
 
-    /// @defgroup STL container type requirements
+    /// @name STL container type requirements
     /// @{
     using value_type             = const char;
     using difference_type        = std::ptrdiff_t;
@@ -110,9 +113,11 @@ private:
 template <size_t LenWithTerminator>
 StringLiteral(const char (&)[LenWithTerminator]) -> StringLiteral<LenWithTerminator - 1>;
 
+/// Deduction guide for StringLiteral
 template <size_t Len> StringLiteral(ConstString<Len>) -> StringLiteral<Len>;
 
-/// @defgroup Concatenates two string literals, string literal values, char literal values
+/// @name Operators
+/// Concatenates two string literals, string literal values, char literal values.
 /// @{
 template <size_t L1, size_t L2>
 [[nodiscard]] constexpr ConstString<L1 + L2> operator+(const StringLiteral<L1> &lhs,
@@ -146,7 +151,7 @@ public:
     using StringLiteralType = StringLiteral<Len>;
     using LiteralType       = typename StringLiteralType::LiteralType;
 
-    /// @defgroup STL container type requirements
+    /// @name STL container type requirements
     /// @{
     using value_type             = const char;
     using difference_type        = std::ptrdiff_t;
@@ -173,11 +178,13 @@ public:
     /// Constructor, initialize a const string from a std::string_view
     [[nodiscard]] constexpr ConstString(std::string_view sv);
 
+    /// @cond
     /// Constructor, initialize from concatenating two StringLiteral
     /// @note The total length of two strings must be equal to the length of initialized string.
     template <size_t L1, typename = std::enable_if_t<L1 <= Len>>
     [[nodiscard]] constexpr ConstString(const StringLiteral<L1> &      str1,
                                         const StringLiteral<Len - L1> &str2);
+    /// @endcond
 
     /// Default copy constructor
     [[nodiscard]] constexpr ConstString(const ConstString &) = default;
@@ -270,7 +277,8 @@ private:
 template <size_t LenWithTerminator>
 ConstString(const char (&)[LenWithTerminator]) -> ConstString<LenWithTerminator - 1>;
 
-/// @defgroup Concatenates two const string or string literal
+/// @name Operators
+/// Concatenates two const strings or string literals.
 /// @{
 template <size_t L1, size_t L2>
 [[nodiscard]] constexpr ConstString<L1 + L2> operator+(const ConstString<L1> &lhs,
@@ -297,6 +305,8 @@ template <size_t L>
 
 template <size_t L>
 [[nodiscard]] constexpr ConstString<L + 1> operator+(char lhs, const ConstString<L> &rhs);
+/// @}
+
 /// @}
 
 }  // namespace ftc

@@ -15,7 +15,10 @@
 
 namespace ftc {
 
-/// Checks if a type is a callable type (i.e. has operator())
+/// @defgroup FunctionTraits Function Traits
+/// @{
+
+/// Checks if a type is a callable type (has operator()).
 /// Types like std::function, lambdas, functors, native function are callables.
 /// @note Overloaded callable type can not be detected with this. Use std::is_is_invocable instead.
 template <typename F> struct is_callable;
@@ -45,6 +48,8 @@ template <typename F> constexpr std::size_t ArityOf(F &&f);
 ///
 /// @note Needs C++20 support
 #define INVOKE_FUNC_T(f, ...) std::invoke_result_t<decltype(LIFT(f)), __VA_ARGS__>
+
+/// @}
 
 }  // namespace ftc
 

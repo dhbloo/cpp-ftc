@@ -15,6 +15,10 @@
 
 namespace ftc {
 
+/// @defgroup Singleton Singleton Mixins
+/// @{
+
+/// Defualt Creator for type T
 template <typename T> struct DefaultCreator
 {
     constexpr T operator()() const { return T {}; }
@@ -113,6 +117,8 @@ private:
     inline static std::mutex       mutex;
     inline static ExitGuard        exitGuard;
 };
+
+/// @}
 
 }  // namespace ftc
 
