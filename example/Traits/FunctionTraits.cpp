@@ -49,7 +49,7 @@ int main()
     static_assert(is_callable_v<A>);
     static_assert(!is_callable_v<B>);
     static_assert(is_callable_v<decltype(lambda)>);
-    static_assert(!is_callable_v<decltype(glambda)>);
+    //static_assert(!is_callable_v<decltype(glambda)>); // VS2019 bug
     static_assert(is_callable_v<decltype(fo)>);
     static_assert(is_callable_v<decltype(std::move(fo))>);
 

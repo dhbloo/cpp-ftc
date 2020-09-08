@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 cmake_policy(VERSION 3.12)
 
-option(BUILD_EXAMPLES "Build example programs" ON)
-option(BUILD_TESTS "Build test programs" ON)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    set(DEFAULT_BUILD_EXAMPLES ON)
+    set(DEFAULT_BUILD_TESTS ON)
+endif()
+
+option(BUILD_EXAMPLES "Build example programs" ${DEFAULT_BUILD_EXAMPLES})
+option(BUILD_TESTS "Build test programs" ${DEFAULT_BUILD_TESTS})
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

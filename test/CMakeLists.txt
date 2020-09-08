@@ -23,15 +23,20 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
                  ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
                  EXCLUDE_FROM_ALL)
 
-# The gtest/gtest_main targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-  include_directories("${gtest_SOURCE_DIR}/include")
-endif()
-
 # Now simply link against gtest or gtest_main as needed. Eg
 
+enable_testing()
 set(SRC ${CMAKE_SOURCE_DIR}/include/FTC)
+
+function(add_ftc_test source_file)
+	if(ARGV1)
+		set(output_file ${ARGV1})
+	else()
+		string(REPLACE "/" "_" output_file ${source_file})
+	endif()
+	add_executable(Test_${output_file} ./${source_file}.cpp ${SRC}/${source_file}.hpp)
+	target_link_libraries(Test_${output_file} FTC gtest_main)
+	add_test(NAME ${output_file} COMMAND $<TARGET_FILE:Test_${output_file}>)
+endfunction()
 
 add_subdirectory(./Function)
