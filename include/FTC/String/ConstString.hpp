@@ -93,14 +93,10 @@ public:
     [[nodiscard]] constexpr const_reference Back() const { return At<Len - 1>(); }
 
     /// Gets an iterator at the beginning
-    [[nodiscard]] constexpr iterator Begin() const { return &literal[0]; }
+    [[nodiscard]] constexpr iterator begin() const { return &literal[0]; }
 
     /// Gets an iterator at the end
-    [[nodiscard]] constexpr iterator End() const { return &literal[Len]; }
-
-    // Range based for loop support, do not use directly
-    [[nodiscard]] constexpr iterator begin() const { return Begin(); }
-    [[nodiscard]] constexpr iterator end() const { return End(); }
+    [[nodiscard]] constexpr iterator end() const { return &literal[Len]; }
 
     // StringLiteral can not be assigned
     constexpr StringLiteral &operator=(const StringLiteral &) = delete;
@@ -237,19 +233,15 @@ public:
     [[nodiscard]] constexpr const_reference Back() const { return At<Len - 1>(); }
 
     /// Gets an iterator at the beginning
-    [[nodiscard]] constexpr iterator Begin() const { return &array[0]; }
+    [[nodiscard]] constexpr iterator begin() const { return &array[0]; }
 
     /// Gets an iterator at the end
-    [[nodiscard]] constexpr iterator End() const { return &array[Len]; }
+    [[nodiscard]] constexpr iterator end() const { return &array[Len]; }
 
     /// Gets a substring of range [Pos, Pos + Count)
     /// @tparam Pos Position of the first character
     /// @tparam Count Substring length
     template <size_t Pos = 0, size_t Count = Len>[[nodiscard]] constexpr auto SubStr() const;
-
-    // Range based for loop support, do not use directly
-    [[nodiscard]] constexpr iterator begin() const { return Begin(); }
-    [[nodiscard]] constexpr iterator end() const { return End(); }
 
     // ConstString can not be assigned
     constexpr ConstString &operator=(const ConstString &other) = delete;
